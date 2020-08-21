@@ -5,6 +5,8 @@ import { IState } from '../store'
 import { ScrollerActionTypes } from '../store/scrollers'
 import { initializeScroller } from '../store/scrollers/actions'
 import { axios } from '../utils/axios'
+import { STATES } from 'mongoose'
+import { routerActions } from 'connected-react-router'
 
 const request: (
   dispatch: Dispatch<IAnyAction<ScrollerActionTypes>>,
@@ -30,13 +32,23 @@ const request: (
     return
   }
 
-  const url = isUser
+  if(localStorage.getItem('@@prefs/showAutos') == 'true') {
+    var url = isUser
     ? `/maps/${type}/${query}/${page}?automapper=1`
     : isSearch
     ? `/search/${type}/${page}?q=${encodeURIComponent(
         query || ''
       )}&?automapper=1`
     : `/maps/${type}/${page}?automapper=1`
+  }else {
+    var url = isUser
+    ? `/maps/${type}/${query}/${page}`
+    : isSearch
+    ? `/search/${type}/${page}?q=${encodeURIComponent(
+        query || ''
+      )}`
+    : `/maps/${type}/${page}`
+  }
 
   dispatch({
     payload: { key, value: true },
